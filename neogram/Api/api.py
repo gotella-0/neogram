@@ -15,8 +15,8 @@ class Api:
         self.modules = modules
         self.menus = {}
         self.database = Database(name_project, database["host"], database["login"], database["password"], database_type=database["type"], port=database["port"])
-        self.database.connect()
         self.prefixes = prefixes
+        self._check_database()
 
     def _check(self):
         try:
@@ -25,6 +25,19 @@ class Api:
         except:
             print(f"{Color.Red}[Error]{Color.END} Bot token is invalid!")
             exit()
+
+    def _check_database(self):
+        if not self.database.check():
+            try:
+                self.database.create_db()
+                self.database.connect()
+                self.database.create_tables()
+                self.database.check()
+            except:
+                print(f"{Color.Red}[Error]{Color.END} Connection to database was errored. Please, check your database configuration in config file!")
+                exit()
+        else:
+            self.database.connect()
 
 
 

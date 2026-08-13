@@ -3,12 +3,10 @@ import shutil
 from ..beauty import Color
 from .parser import *
 from .database import *
-from ..Api import Api, Manager, Worker
-from aiogram import Bot, Dispatcher, executor, types
+from ..Api import Api
 import toml
-from multiprocessing import Queue, Process
 from sys import exit
-import time, string, random
+import string, random
 
 def create_default_toml(name_project, path, database_type="mysql"):
     file = {}
@@ -95,29 +93,6 @@ def create_project(name_project):
 def run_project(name_project):
     data = Parser(name_project)
 
-    #multiprocess mode
-    try:
-        bot = Bot(token=data.bot_token)
-        dp = Dispatcher(bot)
-    except:
-        print(f"{Color.Red}[Error]{Color.END} Bot token is invalid!")
-        exit()
-    
-    try:
-        database = data.database
-        database = Database(name_project, database["host"], database["login"], database["password"], database_type=database["type"], port=database["port"])
-        if not database.check():
-            raise Exception("Database is not available")
-    except:
-        try:
-            database.create_db() # it's create database
-            database.connect() # it's connect to database
-            database.create_tables()
-            database.check()
-        except:
-            print(f"{Color.Red}[Error]{Color.END} Connection to database was errored. Please, check your database configuration in config file!")
-            exit()
-    
     prefixes = {"photo": ''.join(random.SystemRandom().choice(string.ascii_letters + string.punctuation) for _ in range(6)),
     "video": ''.join(random.SystemRandom().choice(string.ascii_letters + string.punctuation) for _ in range(6)),
     "audio":''.join(random.SystemRandom().choice(string.ascii_letters + string.punctuation) for _ in range(6)),
@@ -126,67 +101,33 @@ def run_project(name_project):
     "location":''.join(random.SystemRandom().choice(string.ascii_letters + string.punctuation) for _ in range(6)),
     "contact":''.join(random.SystemRandom().choice(string.ascii_letters + string.punctuation) for _ in range(6))}
 
+    api = Api(data.bot_token, name_project, data.modules, data.database, prefixes)
 
-    COUNT_WORKERS = 4
-    workers = []
-    for i in range(COUNT_WORKERS):
-        worker = Worker(data.bot_token, name_project, data.modules, data.database, prefixes)
-        try:
-            for command in data.commands:
-                worker.register_command(command, data.commands[command])
-        except:
-            pass
-        
-        try:
-            for message in data.messages:
-                worker.register_message(message, data.messages[message])
-        except:
-            pass
-
-        try:
-            for callback in data.callbacks:
-                worker.register_callback(callback, data.callbacks[callback])
-        except AttributeError:
-            pass
-
-        try:
-            for type in data.files:
-                worker.register_file(type, data.files[type])
-        except:
-            pass
-
-        workers.append(worker)
-    
-    manager = Manager(workers, dp)
     try:
         for command in data.commands:
-            manager.register_command(command, data.commands[command])
+            api.register_command(command, data.commands[command])
     except:
         pass
-        
+
     try:
         for message in data.messages:
-            manager.register_message(message, data.messages[message])
+            api.register_message(message, data.messages[message])
     except:
         pass
-    
+
     try:
         for callback in data.callbacks:
-            manager.register_callback(callback, data.callbacks[callback])
+            api.register_callback(callback, data.callbacks[callback])
     except AttributeError:
         pass
 
     try:
         for type in data.files:
-            manager.register_file(type, data.files[type])
+            api.register_file(type, data.files[type])
     except:
         pass
 
-    manager.run()
-    try:
-        time.sleep(120000)
-    except KeyboardInterrupt:
-        manager.stop()
+    api.run()
 
 
 def remove_project(name_project):
