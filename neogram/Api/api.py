@@ -1,20 +1,22 @@
 from aiogram import Bot, Dispatcher, executor, types
 from ..beauty import Color
 from sys import exit
-from multiprocessing import Process, Queue, Pipe
+from ..additions.database import Database
 import os
 import time
 
 
 class Api:
-    def __init__(self, bot_token, name_project, modules):
+    def __init__(self, bot_token, name_project, modules, database, prefixes):
         self.token = bot_token
         self._check()
-        self.state = {}
         self.logic_commands = {}
         self.name_project = name_project
         self.modules = modules
         self.menus = {}
+        self.database = Database(name_project, database["host"], database["login"], database["password"], database_type=database["type"], port=database["port"])
+        self.database.connect()
+        self.prefixes = prefixes
 
     def _check(self):
         try:
@@ -48,11 +50,11 @@ class Api:
         self._check_buttons(f"data:{data}")
         self.dp.register_callback_query_handler(self.callback_handler, lambda callback_query: True)
     
-    def register_file(self, prefix, type, args):
-        self.logic_commands[f"{prefix}:"+type] = dict(args)
+    def register_file(self, type, args):
+        self.logic_commands[f"{self.prefixes[type]}:"+type] = dict(args)
 
-        self._check_state(f"{prefix}:"+type)
-        self._check_buttons(f"{prefix}:"+type)
+        self._check_state(f"{self.prefixes[type]}:"+type)
+        self._check_buttons(f"{self.prefixes[type]}:"+type)
         self.dp.register_message_handler(self.file_handler, content_types=[type]) #document including audio?
 
 
@@ -479,12 +481,15 @@ class Api:
 
     #Private methods
     def set_state(self, command, user_id):
+        current_state = self.database.get_state(user_id)
         try:
-            if "set_state" in self.logic_commands[command][self.state[user_id]]:
-                self.state[user_id] = self.logic_commands[command][self.state[user_id]]["set_state"]
+            if "set_state" in self.logic_commands[command][current_state]:
+                state = self.logic_commands[command][current_state]["set_state"]
+                self.database.update_state(user_id, state)
         except:
             if "set_state" in self.logic_commands[command]["any"]:
-                self.state[user_id] = self.logic_commands[command]["any"]["set_state"]
+                state = self.logic_commands[command]["any"]["set_state"]
+                self.database.update_state(user_id, state)
 
     def _check_state(self, command):
         tmp = {}
@@ -563,4 +568,4 @@ class Api:
 
 
     def run(self):
-        Process(target=executor.start_polling, daemon=True, args= (self.dp,)).start()
+        executor.start_polling(self.dp)
