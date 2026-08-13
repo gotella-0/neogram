@@ -4,7 +4,7 @@
 # Copyright © 2022 Nikita Smirnov. All rights reserved. #
 #########################################################
 
-from imports import * # import all
+from .imports import * # import all
 
 
 def check_cmd_args():
@@ -39,8 +39,3 @@ def check_cmd_args():
 
     else:
         print(MAIN_HELP)
-
-
-
-if __name__ == "__main__":
-    check_cmd_args()
