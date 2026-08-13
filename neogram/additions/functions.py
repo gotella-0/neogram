@@ -10,12 +10,15 @@ from multiprocessing import Queue, Process
 from sys import exit
 import time, string, random
 
-def create_default_toml(name_project, path):
+def create_default_toml(name_project, path, database_type="mysql"):
     file = {}
     file["name_project"] = name_project
     file["bot_token"] = "write_here_bot_api_token"
     file["admins"] = ["write_here_id"]
-    file["database"] = {"type":"mysql", "host":"localhost", "login":"neogram", "password":"WRITE_YOUR_PASSWORD", "port":"3306"}
+    if database_type == "sqlite":
+        file["database"] = {"type":"sqlite", "host":"", "login":"", "password":"", "port":""}
+    else:
+        file["database"] = {"type":"mysql", "host":"localhost", "login":"neogram", "password":"WRITE_YOUR_PASSWORD", "port":"3306"}
     file["commands"] = {"start" : {
     "text" : "Hi in bot made in NeoGram", 
     "action" : "send_text"}}
@@ -26,26 +29,35 @@ def create_default_toml(name_project, path):
 
 def create_project(name_project):
     path = os.getcwd()
-    database_type = input(f"{Color.Cyan}[Database]{Color.END} Choose database (default - mysql):\n1.Mysql\n2.Postgresql\n\nAnswer: ")
-    host = str(input(f"{Color.Cyan}[Database]{Color.END} Write ip database (default - localhost): "))
-    port = str(input(f"{Color.Cyan}[Database]{Color.END} Write port database (default for mysql - 3306, for postgres - 5432): "))
-    user = str(input(f"{Color.Cyan}[Database]{Color.END} Write login (default- neogram): "))
-    passwd = str(input(f"{Color.Cyan}[Database]{Color.END} Write password: "))
+    database_type = input(f"{Color.Cyan}[Database]{Color.END} Choose database (default - mysql):\n1.Mysql\n2.Postgresql\n3.SQLite\n\nAnswer: ")
 
     if database_type == "1" or database_type == "":
         database_type = "mysql"
+    elif database_type == "3":
+        database_type = "sqlite"
 
-    if host == "":
-        host = "localhost"
-    
-    if port == "":
-        if database_type == "mysql":
-            port = "3306"
-        elif database_type == "postgres":
-            port = "5432"
+    if database_type == "sqlite":
+        host = ""
+        port = ""
+        user = ""
+        passwd = ""
+    else:
+        host = str(input(f"{Color.Cyan}[Database]{Color.END} Write ip database (default - localhost): "))
+        port = str(input(f"{Color.Cyan}[Database]{Color.END} Write port database (default for mysql - 3306, for postgres - 5432): "))
+        user = str(input(f"{Color.Cyan}[Database]{Color.END} Write login (default- neogram): "))
+        passwd = str(input(f"{Color.Cyan}[Database]{Color.END} Write password: "))
 
-    if user == "":
-        user = "neogram"
+        if host == "":
+            host = "localhost"
+        
+        if port == "":
+            if database_type == "mysql":
+                port = "3306"
+            elif database_type == "postgres":
+                port = "5432"
+
+        if user == "":
+            user = "neogram"
 
 
     try:
@@ -73,7 +85,7 @@ def create_project(name_project):
         print(f"{Color.Yellow}[Info]{Color.END} Creating project was aborted")
         exit()
     
-    create_default_toml(name_project, path + '/' + name_project)
+    create_default_toml(name_project, path + '/' + name_project, database_type=database_type)
     database = Database(name_project, host, user, passwd, database_type=database_type, port=port)
     database.create_db() # it's create database
     database.connect() # it's connect to database
