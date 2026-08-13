@@ -2,7 +2,7 @@ import toml
 import os
 import sys
 from sys import exit
-from beauty import Color
+from ..beauty import Color
 
 class Parser:
     def __init__(self, name_project):

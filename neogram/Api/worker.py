@@ -1,7 +1,7 @@
-from beauty import Color
+from ..beauty import Color
 from sys import exit
 from .api import Api
-from additions.database import *
+from ..additions.database import *
 from os import getpid
 import asyncio
 import time

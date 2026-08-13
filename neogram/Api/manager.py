@@ -1,5 +1,5 @@
 from aiogram import Bot, Dispatcher, executor, types
-from beauty import Color
+from ..beauty import Color
 from sys import exit
 from multiprocessing import Process, Queue
 import os
