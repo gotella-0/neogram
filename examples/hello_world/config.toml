@@ -1,0 +1,43 @@
+name_project = "hello_world"
+bot_token = "write_here_bot_api_token"
+admins = [ "write_here_id",]
+
+[database]
+type = "mysql"
+host = "localhost"
+login = "neogram"
+password = "password"
+port = "3306"
+
+[commands.start]
+text = "Hi in bot made in NeoGram"
+action = "send_text"
+
+[files.photo]
+actions = ["get_photo", "send_text"]
+name = "test"
+texts = ["Photo succesfully accepted", "good multiple texts"]
+
+[files.audio]
+name = "test"
+action = "get_audio"
+
+[files.voice]
+name = "test"
+action = "get_voice"
+
+[files.document]
+name = "test"
+action = "get_document"
+
+[files.video]
+name = "test"
+action = "get_video"
+
+[files.location]
+name = "test"
+action = "get_location"
+
+[files.contact]
+name = "test"
+action = "get_contact"

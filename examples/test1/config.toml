@@ -1,0 +1,19 @@
+name_project = "test1"
+bot_token = "write_here_bot_api_token"
+admins = [ "write_here_id",]
+
+[database]
+type = "mysql"
+host = "localhost"
+login = "neogram"
+password = "password"
+port = "3306"
+
+[commands.start]
+text = "Hi in bot made in NeoGram"
+action = "send_text"
+set_state = "pressed"
+
+[commands.check.state.pressed]
+text = "State sucessfully checked!"
+action = "send_text"
