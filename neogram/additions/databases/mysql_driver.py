@@ -3,7 +3,7 @@ try:
 except ModuleNotFoundError:
     print("Please, write in bash command: pip install mysql-connector-python")
 from mysql.connector import Error
-from beauty import Color
+from ...beauty import Color
 from sys import exit
 
 

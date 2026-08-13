@@ -3,7 +3,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.pool import NullPool
 from sqlalchemy import create_engine
 from sys import exit
-from beauty import Color
+from ..beauty import Color
 
 
 class Database:

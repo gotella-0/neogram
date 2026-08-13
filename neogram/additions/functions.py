@@ -1,9 +1,9 @@
 import os
 import shutil
-from beauty import Color
+from ..beauty import Color
 from .parser import *
 from .database import *
-from Api import Api, Manager, Worker
+from ..Api import Api, Manager, Worker
 from aiogram import Bot, Dispatcher, executor, types
 import toml
 from multiprocessing import Queue, Process

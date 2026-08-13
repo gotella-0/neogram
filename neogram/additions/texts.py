@@ -2,7 +2,7 @@
 # Copyright © 2022 Nikita Smirnov. All rights reserved. #
 #########################################################
 
-from beauty import Color
+from ..beauty import Color
 
 MAIN_HELP = f'''
 Usage:

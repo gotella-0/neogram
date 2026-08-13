@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "neogram"
+version = "0.1.0"
+description = "Low-code config-driven Telegram bot framework on aiogram 2.x"
+requires-python = ">=3.8"
+dependencies = [
+    "aiogram==2.20",
+    "sqlalchemy==1.4.39",
+    "sqlalchemy-serializer==1.4.1",
+    "mysql-connector-python==8.0.29",
+    "PyMySql==1.0.2",
+    "toml==0.10.2",
+]
+
+[project.scripts]
+neogram = "neogram.cli:check_cmd_args"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["neogram*"]
