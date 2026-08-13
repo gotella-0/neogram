@@ -2,6 +2,7 @@ from aiogram import Bot, Dispatcher, executor, types
 from ..beauty import Color
 from sys import exit
 from ..additions.database import Database
+import asyncio
 import os
 import time
 
@@ -38,6 +39,15 @@ class Api:
                 exit()
         else:
             self.database.connect()
+
+    async def _get_state(self, user_id):
+        return await asyncio.to_thread(self.database.get_state, user_id)
+
+    async def _update_state(self, user_id, state):
+        await asyncio.to_thread(self.database.update_state, user_id, state)
+
+    async def _add_media(self, name, type, file_id, owner):
+        await asyncio.to_thread(self.database.add_media, name, type, file_id, owner)
 
 
 
@@ -77,7 +87,7 @@ class Api:
         start_time = time.time()#for debug
         try:
             try:
-                cmd = self.logic_commands[f"data:{call.data}"][self.database.get_state(call.from_user.id)]
+                cmd = self.logic_commands[f"data:{call.data}"][await self._get_state(call.from_user.id)]
             except:
                 cmd = self.logic_commands[f"data:{call.data}"]["any"]
         except:
@@ -113,7 +123,7 @@ class Api:
         
         try:
             try:
-                cmd = self.logic_commands[magic_word][self.database.get_state(message.from_user.id)]
+                cmd = self.logic_commands[magic_word][await self._get_state(message.from_user.id)]
             except:
                 cmd = self.logic_commands[magic_word]["any"]
         except:
@@ -145,7 +155,7 @@ class Api:
         
         try:
             try:
-                cmd = self.logic_commands[magic_word][self.database.get_state(message.from_user.id)]
+                cmd = self.logic_commands[magic_word][await self._get_state(message.from_user.id)]
             except:
                 cmd = self.logic_commands[magic_word]["any"]
         except:
@@ -174,7 +184,7 @@ class Api:
         try:
             try:
                 print(message) #for debug
-                cmd = self.logic_commands[f"{self.prefixes[message.content_type]}:{message.content_type}"][self.database.get_state(message.from_user.id)]
+                cmd = self.logic_commands[f"{self.prefixes[message.content_type]}:{message.content_type}"][await self._get_state(message.from_user.id)]
             except:
                 cmd = self.logic_commands[f"{self.prefixes[message.content_type]}:{message.content_type}"]["any"]
         except:
@@ -210,7 +220,7 @@ class Api:
         magic_word, magic_word_type = self._check_type(message)
 
         try:
-            markup = self.menus[magic_word][self.database.get_state(message.from_user.id)]
+            markup = self.menus[magic_word][await self._get_state(message.from_user.id)]
         except:
             try:
                 markup = self.menus[magic_word]['any']
@@ -246,7 +256,7 @@ class Api:
                 except:
                     print(f'{Color.Red}[Error]{Color.END} In {magic_word_type} {magic_word if ((not "data:" in magic_word) and (not(any(map(lambda x: x in magic_word, self.prefixes.values()))))) else magic_word[magic_word.find(":")+1:]} action send_text was errored! ')
 
-        self.set_state(magic_word, message.from_user.id)
+        await self.set_state(magic_word, message.from_user.id)
 
     async def send_photo(self, message, cmd):
         abs_path = os.getcwd() + "/" + self.name_project + "/assets/"
@@ -255,7 +265,7 @@ class Api:
         magic_word, magic_word_type = self._check_type(message)
 
         try:
-            markup = self.menus[magic_word][self.database.get_state(message.from_user.id)]
+            markup = self.menus[magic_word][await self._get_state(message.from_user.id)]
         except:
             try:
                 markup = self.menus[magic_word]['any']
@@ -275,7 +285,7 @@ class Api:
         except AttributeError:
             print(f'{Color.Red}[Error]{Color.END} In {magic_word_type} {magic_word if not "data:" in magic_word else magic_word.split("data:")[1]} action send_photo with problems function! ')
         
-        self.set_state(magic_word, message.from_user.id)
+        await self.set_state(magic_word, message.from_user.id)
         
         try:
             await self.bot.send_photo(chat_id = message.from_user.id, photo= photo, caption= caption, reply_markup= markup)
@@ -289,7 +299,7 @@ class Api:
         magic_word, magic_word_type = self._check_type(message)
 
         try:
-            markup = self.menus[magic_word][self.database.get_state(message.from_user.id)]
+            markup = self.menus[magic_word][await self._get_state(message.from_user.id)]
         except:
             try:
                 markup = self.menus[magic_word]['any']
@@ -310,7 +320,7 @@ class Api:
             except AttributeError:
                 print(f'{Color.Red}[Error]{Color.END} In {magic_word_type} {magic_word if ((not "data:" in magic_word) and (not(any(map(lambda x: x in magic_word, self.prefixes.values()))))) else magic_word[magic_word.find(":")+1:]} action send_document with problems function! ')
 
-            self.set_state(magic_word, message.from_user.id)
+            await self.set_state(magic_word, message.from_user.id)
 
             try:
                 await self.bot.send_document(chat_id = message.from_user.id, document= document, caption= caption, reply_markup= markup)
@@ -333,7 +343,7 @@ class Api:
                 except AttributeError:
                     print(f'{Color.Red}[Error]{Color.END} In {magic_word_type} {magic_word if ((not "data:" in magic_word) and (not(any(map(lambda x: x in magic_word, self.prefixes.values()))))) else magic_word[magic_word.find(":")+1:]} action send_document with problems function! ')
     
-                self.set_state(magic_word, message.from_user.id)
+                await self.set_state(magic_word, message.from_user.id)
     
                 try:
                     await self.bot.send_document(chat_id = message.from_user.id, document= document, caption= caption, reply_markup= markup)
@@ -345,7 +355,7 @@ class Api:
         magic_word, magic_word_type = self._check_type(message)
 
         try:
-            markup = self.menus[magic_word][self.database.get_state(message.from_user.id)]
+            markup = self.menus[magic_word][await self._get_state(message.from_user.id)]
         except:
             try:
                 markup = self.menus[magic_word]['any']
@@ -370,7 +380,7 @@ class Api:
         magic_word, magic_word_type = self._check_type(message)
 
         try:
-            markup = self.menus[magic_word][self.database.get_state(message.from_user.id)]
+            markup = self.menus[magic_word][await self._get_state(message.from_user.id)]
         except:
             try:
                 markup = self.menus[magic_word]['any']
@@ -384,7 +394,7 @@ class Api:
         except AttributeError:
             print(f'{Color.Red}[Error]{Color.END} In {magic_word_type} {magic_word if not "data:" in magic_word else magic_word.split("data:")[1]} action edit_text with problems function! ')
 
-        self.set_state(magic_word, message.from_user.id)
+        await self.set_state(magic_word, message.from_user.id)
         try:
             if magic_word_type == "callback":
                 await self.bot.edit_message_text(chat_id = message.from_user.id, text=text, reply_markup= markup, message_id = message.message.message_id)
@@ -406,7 +416,7 @@ class Api:
             owner = "0"
 
         photo = message["photo"][0]["file_id"]
-        self.database.add_media(name, "photo", photo, owner)
+        await self._add_media(name, "photo", photo, owner)
     
     async def get_audio(self, message, cmd):
         try:
@@ -420,7 +430,7 @@ class Api:
             owner = "0"
         
         audio = message["audio"]["file_id"]
-        self.database.add_media(name, "audio", audio, owner)
+        await self._add_media(name, "audio", audio, owner)
     
     async def get_voice(self, message, cmd):
         try:
@@ -434,7 +444,7 @@ class Api:
             owner = "0"
         
         voice = message["voice"]["file_id"]
-        self.database.add_media(name, "voice", voice, owner)
+        await self._add_media(name, "voice", voice, owner)
     
     async def get_document(self, message, cmd):
         try:
@@ -448,7 +458,7 @@ class Api:
             owner = "0"
         
         document = message["document"]["file_id"]
-        self.database.add_media(name, "document", document, owner)
+        await self._add_media(name, "document", document, owner)
     
     async def get_video(self, message, cmd):
         try:
@@ -462,7 +472,7 @@ class Api:
             owner = "0"
         
         video = message["video"]["file_id"]
-        self.database.add_media(name, "video", video, owner)
+        await self._add_media(name, "video", video, owner)
     
     async def get_location(self, message, cmd):
         try:
@@ -476,7 +486,7 @@ class Api:
             owner = "0"
         
         location = message["location"]
-        self.database.add_media(name, "location", location, owner)
+        await self._add_media(name, "location", location, owner)
     
     async def get_contact(self, message, cmd):
         try:
@@ -490,19 +500,19 @@ class Api:
             owner = "0"
         
         contact = message["contact"]
-        self.database.add_media(name, "contact", contact, owner)
+        await self._add_media(name, "contact", contact, owner)
 
     #Private methods
-    def set_state(self, command, user_id):
-        current_state = self.database.get_state(user_id)
+    async def set_state(self, command, user_id):
+        current_state = await self._get_state(user_id)
         try:
             if "set_state" in self.logic_commands[command][current_state]:
                 state = self.logic_commands[command][current_state]["set_state"]
-                self.database.update_state(user_id, state)
+                await self._update_state(user_id, state)
         except:
             if "set_state" in self.logic_commands[command]["any"]:
                 state = self.logic_commands[command]["any"]["set_state"]
-                self.database.update_state(user_id, state)
+                await self._update_state(user_id, state)
 
     def _check_state(self, command):
         tmp = {}
