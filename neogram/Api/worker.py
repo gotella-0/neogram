@@ -20,6 +20,7 @@ elif platform == "win32":
 
 class Worker(Api):
     def __init__(self, bot_token, name_project, modules, database, prefixes):
+        self.token = bot_token
         self.bot = Bot(token=bot_token)
         self.database = Database(name_project, database["host"], database["login"], database["password"], database_type=database["type"], port= database["port"])
         self.database.connect()
@@ -33,6 +34,26 @@ class Worker(Api):
             asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
         self.loop = asyncio.get_event_loop()
         self.status = "Normal"
+
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        state.pop("bot", None)
+        state.pop("loop", None)
+        if "database" in state:
+            db = state["database"]
+            state["database"] = Database(db.name_project, db.host, db.user, db.passwd, db.database_type, db.port)
+        if "modules" in state:
+            state["modules"] = {name: mod.__name__ for name, mod in state["modules"].items()}
+        return state
+
+    def __setstate__(self, state):
+        self.__dict__.update(state)
+        self.modules = {name: __import__(mod_name) for name, mod_name in self.modules.items()}
+        self.bot = Bot(token=self.token)
+        if UVLOOP_MODE:
+            asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+        self.loop = asyncio.get_event_loop()
+        self.database.connect()
 
     def register_command(self,command, args):
         self.logic_commands["/"+command] = dict(args)
