@@ -5,3 +5,5 @@ __pycache__/
 *.py[cod]
 
 _internal_files_/
+
+*.db
