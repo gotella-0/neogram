@@ -1,4 +1,8 @@
 import importlib
+import pickle
+import os
+
+import pytest
 
 
 def test_import_neogram_package():
@@ -50,3 +54,24 @@ def test_import_all_submodules():
         "neogram.beauty.colors",
     ]:
         importlib.import_module(name)
+
+
+def test_worker_pickle_roundtrip(monkeypatch, tmp_path):
+    from neogram.Api.worker import Worker
+
+    monkeypatch.chdir(tmp_path)
+    os.makedirs("proj", exist_ok=True)
+    db_cfg = {"host": "", "login": "", "password": "", "type": "sqlite", "port": ""}
+    prefixes = {k: "p" for k in ["photo", "video", "audio", "document", "voice", "location", "contact"]}
+    worker = Worker("123:TEST", "proj", {}, db_cfg, prefixes)
+
+    blob = pickle.dumps(worker)
+    restored = pickle.loads(blob)
+
+    assert restored.token == "123:TEST"
+    assert restored.bot is not None
+    assert restored.loop is not None
+    assert restored.database.engine is not None
+    assert restored.logic_commands == worker.logic_commands
+    assert restored.prefixes == worker.prefixes
+    assert restored.name_project == worker.name_project
