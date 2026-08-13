@@ -1,5 +1,4 @@
 import importlib
-import pickle
 import os
 
 import pytest
@@ -33,8 +32,8 @@ def test_import_database():
 
 
 def test_import_api():
-    from neogram.Api import Api, Manager, Worker
-    assert all(x is not None for x in (Api, Manager, Worker))
+    from neogram.Api import Api
+    assert Api is not None
 
 
 def test_import_beauty():
@@ -44,34 +43,58 @@ def test_import_beauty():
 
 def test_import_all_submodules():
     for name in [
-        "neogram.additions.texts",
         "neogram.additions.functions",
         "neogram.additions.parser",
         "neogram.additions.database",
         "neogram.Api.api",
-        "neogram.Api.worker",
-        "neogram.Api.manager",
         "neogram.beauty.colors",
     ]:
         importlib.import_module(name)
 
 
-def test_worker_pickle_roundtrip(monkeypatch, tmp_path):
-    from neogram.Api.worker import Worker
+def test_api_builds_dispatcher(monkeypatch, tmp_path):
+    from neogram.Api import Api
 
     monkeypatch.chdir(tmp_path)
     os.makedirs("proj", exist_ok=True)
     db_cfg = {"host": "", "login": "", "password": "", "type": "sqlite", "port": ""}
     prefixes = {k: "p" for k in ["photo", "video", "audio", "document", "voice", "location", "contact"]}
-    worker = Worker("123:TEST", "proj", {}, db_cfg, prefixes)
 
-    blob = pickle.dumps(worker)
-    restored = pickle.loads(blob)
+    api = Api("123:TEST", "proj", {}, db_cfg, prefixes)
 
-    assert restored.token == "123:TEST"
-    assert restored.bot is not None
-    assert restored.loop is not None
-    assert restored.database.engine is not None
-    assert restored.logic_commands == worker.logic_commands
-    assert restored.prefixes == worker.prefixes
-    assert restored.name_project == worker.name_project
+    assert api.bot is not None
+    assert api.dp is not None
+    assert api.database.engine is not None
+    assert api.logic_commands == {}
+    assert api.menus == {}
+    assert api.prefixes == prefixes
+    assert api.name_project == "proj"
+
+
+def test_api_registers_commands(monkeypatch, tmp_path):
+    from neogram.Api import Api
+
+    monkeypatch.chdir(tmp_path)
+    os.makedirs("proj", exist_ok=True)
+    db_cfg = {"host": "", "login": "", "password": "", "type": "sqlite", "port": ""}
+    prefixes = {k: "p" for k in ["photo", "video", "audio", "document", "voice", "location", "contact"]}
+
+    api = Api("123:TEST", "proj", {}, db_cfg, prefixes)
+    api.register_command("start", {"text": "Hi", "action": "send_text"})
+
+    assert "/start" in api.logic_commands
+    assert api.logic_commands["/start"]["any"]["action"] == "send_text"
+
+
+def test_api_registers_files(monkeypatch, tmp_path):
+    from neogram.Api import Api
+
+    monkeypatch.chdir(tmp_path)
+    os.makedirs("proj", exist_ok=True)
+    db_cfg = {"host": "", "login": "", "password": "", "type": "sqlite", "port": ""}
+    prefixes = {k: "p" for k in ["photo", "video", "audio", "document", "voice", "location", "contact"]}
+
+    api = Api("123:TEST", "proj", {}, db_cfg, prefixes)
+    api.register_file("photo", {"action": "get_photo", "name": "test"})
+
+    assert f"{prefixes['photo']}:photo" in api.logic_commands
