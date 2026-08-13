@@ -94,26 +94,6 @@ def create_project(name_project):
 
 def run_project(name_project):
     data = Parser(name_project)
-    #single_mode 
-    '''api = Api(data.bot_token, name_project, data.modules)
-
-    try:
-        for command in data.commands:
-            api.register_command(command, data.commands[command])
-    except:
-        pass
-    
-    try:
-        for message in data.messages:
-            api.register_message(message, data.messages[message])
-    except:
-        pass
-
-    for callback in data.callbacks:
-        api.register_callback(callback, data.callbacks[callback])
-
-    api.run()
-    time.sleep(1200)'''
 
     #multiprocess mode
     try:

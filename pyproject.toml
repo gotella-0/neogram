@@ -10,7 +10,6 @@ requires-python = ">=3.8"
 dependencies = [
     "aiogram==2.20",
     "sqlalchemy==1.4.39",
-    "sqlalchemy-serializer==1.4.1",
     "mysql-connector-python==8.0.29",
     "PyMySql==1.0.2",
     "toml==0.10.2",
