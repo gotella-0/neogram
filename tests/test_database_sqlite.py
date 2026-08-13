@@ -16,6 +16,14 @@ def sqlite_db(monkeypatch, tmp_path):
     db.del_db()
 
 
+def test_sqlite_path_with_trailing_slash(monkeypatch, tmp_path):
+    monkeypatch.chdir(tmp_path)
+    os.makedirs("mybot/assets", exist_ok=True)
+    db = Database("./mybot/", "", "", "", "sqlite", "")
+    path = os.path.normpath(db._sqlite_path())
+    assert path == os.path.normpath(os.path.join(tmp_path, "mybot", "mybot.db"))
+
+
 def test_sqlite_db_file_created(monkeypatch, tmp_path):
     monkeypatch.chdir(tmp_path)
     db = Database("test_proj", "", "", "", "sqlite", "")

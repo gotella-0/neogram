@@ -149,7 +149,8 @@ class Worker(Api):
             await self.check_updates(data[0], data[1])
     
     def __del__(self):
-        self.loop.stop()
+        if hasattr(self, "loop"):
+            self.loop.stop()
     
     def run(self, q):
         print(f"{Color.Yellow}[Info]{Color.END} Create worker with process id {getpid()}")

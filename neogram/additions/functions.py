@@ -126,7 +126,8 @@ def run_project(name_project):
     try:
         database = data.database
         database = Database(name_project, database["host"], database["login"], database["password"], database_type=database["type"], port=database["port"])
-        database.check()
+        if not database.check():
+            raise Exception("Database is not available")
     except:
         try:
             database.create_db() # it's create database

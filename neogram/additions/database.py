@@ -20,12 +20,14 @@ class Database:
 
     def _engine_url(self):
         if self.database_type == "sqlite":
-            path = os.path.join(os.getcwd(), self.name_project, f"{self.name_project}.db").replace("\\", "/")
+            path = self._sqlite_path().replace("\\", "/")
             return f"sqlite+pysqlite:///{path}"
         return f"mysql+pymysql://{self.user}:{self.passwd}@{self.host}:{self.port}/{self.name_project}?charset=utf8mb4"
 
     def _sqlite_path(self):
-        return os.path.join(os.getcwd(), self.name_project, f"{self.name_project}.db")
+        project_dir = os.path.join(os.getcwd(), self.name_project)
+        base = os.path.basename(os.path.normpath(self.name_project))
+        return os.path.normpath(os.path.join(project_dir, f"{base}.db"))
 
     def create_db(self):
         if self.database_type == "mysql":
