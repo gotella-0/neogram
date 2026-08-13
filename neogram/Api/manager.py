@@ -4,6 +4,8 @@ from sys import exit
 from multiprocessing import Process, Queue
 import os
 import time
+import asyncio
+import threading
 
 
 class Manager:
@@ -46,11 +48,18 @@ class Manager:
         self.q.put_nowait(["file", message.to_python()])
 
     def run(self):
-        self.proc = Process(target=executor.start_polling, daemon=True, args= (self.dp,))
+        def _poll():
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            self._loop = loop
+            executor.start_polling(self.dp)
+        self.proc = threading.Thread(target=_poll, daemon=True)
         self.proc.start()
     
     def stop(self):
         print(f'{Color.Yellow}[Info]{Color.END} Exiting...')
         for i in range(len(self.proccess)):
             self.proccess[i].terminate()
-        self.proc.kill()
+        loop = getattr(self, "_loop", None)
+        if loop is not None:
+            loop.call_soon_threadsafe(loop.stop)
