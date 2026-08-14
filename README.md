@@ -12,14 +12,12 @@ and the database connection declaratively — NeoGram turns it into a running bo
 > on a single asyncio process (`Api`) and offloads blocking database calls to worker
 > threads via `asyncio.to_thread`.
 
-## Screenshot
+## Screenshot 
 
-Left: the `config.toml` you write. Right: the bot running in Telegram.
+This is screenshot of work bot from examples(test):
 
-<!-- Replace with your own screenshot. Layout: TOML on the left, Telegram chat on the right. -->
 ![NeoGram — config.toml (left) and bot in Telegram (right)](images/screenshot.png)
 
-> The image above is a placeholder. Add your own screenshot at `images/screenshot.png`.
 
 ## Features
 
