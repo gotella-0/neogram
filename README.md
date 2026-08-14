@@ -19,8 +19,6 @@ Left: the `config.toml` you write. Right: the bot running in Telegram.
 <!-- Replace with your own screenshot. Layout: TOML on the left, Telegram chat on the right. -->
 ![NeoGram — config.toml (left) and bot in Telegram (right)](images/screenshot.png)
 
-> The image above is a placeholder. Add your own screenshot at `images/screenshot.png`.
-
 ## Features
 
 - **Config-driven**: describe the whole bot in TOML — no glue code required.
