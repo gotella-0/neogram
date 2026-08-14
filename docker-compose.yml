@@ -1,0 +1,33 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: neogram-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: neogram
+      MYSQL_USER: neogram
+      MYSQL_PASSWORD: password
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-pneogram"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  bot:
+    build: .
+    container_name: neogram-bot
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./my_bot:/app/my_bot
+    command: run my_bot
+
+volumes:
+  db_data:
