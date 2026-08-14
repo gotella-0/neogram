@@ -18,6 +18,7 @@ The documentation is split by topic. Choose what you need:
 | Send actions | [actions.md](actions.md) | [ru/actions.md](ru/actions.md) |
 | API reference | [api-reference.md](api-reference.md) | [ru/api-reference.md](ru/api-reference.md) |
 | Examples walkthrough | [examples.md](examples.md) | [ru/examples.md](ru/examples.md) |
+| Docker deployment | [docker.md](docker.md) | [ru/docker.md](ru/docker.md) |
 
 ## Suggested reading order
 

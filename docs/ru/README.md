@@ -18,6 +18,7 @@ NeoGram — это low-code фреймворк для Telegram-ботов, уп�
 | Действия отправки | [actions.md](../actions.md) | [actions.md](actions.md) |
 | Справочник API | [api-reference.md](../api-reference.md) | [api-reference.md](api-reference.md) |
 | Разбор примеров | [examples.md](../examples.md) | [examples.md](examples.md) |
+| Деплой через Docker | [docker.md](../docker.md) | [docker.md](docker.md) |
 
 ## Рекомендуемый порядок чтения
 

@@ -1,5 +1,7 @@
 # NeoGram
 
+[![CI](https://github.com/gotella-0/neogram/actions/workflows/ci.yml/badge.svg)](https://github.com/gotella-0/neogram/actions/workflows/ci.yml)
+
 **Low-code, config-driven Telegram bot framework built on top of aiogram 2.x.**
 
 NeoGram lets you build Telegram bots by writing a single `config.toml` file instead of
@@ -48,6 +50,34 @@ my_bot/
 ├── modules/       # optional custom Python modules (imported via config)
 └── config.toml    # the entire bot logic
 ```
+
+## Docker
+
+NeoGram ships with a `Dockerfile` and a `docker-compose.yml` that run a bot together
+with a MySQL database:
+
+```bash
+docker compose up -d --build
+```
+
+The compose file expects a bot project in the `./my_bot` directory (create it with
+`neogram create my_bot` and put your token into `config.toml`). Point the bot's
+`[database]` block at the `db` service:
+
+```toml
+[database]
+type = "mysql"
+host = "db"
+login = "neogram"
+password = "password"
+port = "3306"
+```
+
+## CI/CD
+
+Every push and pull request to `main` triggers a GitHub Actions workflow
+([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) that installs the package and
+runs the test suite on Python 3.8, 3.9 and 3.10.
 
 ## Documentation
 
