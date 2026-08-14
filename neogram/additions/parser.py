@@ -23,7 +23,7 @@ class Parser:
         path = os.getcwd() + "/" + self.name_project
 
         try:
-            with open(f'{path}/config.toml', 'r') as f:
+            with open(f'{path}/config.toml', 'r', encoding='utf-8') as f:
                 config = f.read()
             config = toml.loads(config)
         except FileNotFoundError:
@@ -99,7 +99,7 @@ class Parser:
         path = os.getcwd() + "/" + self.name_project
         
         try:
-            with open(f'{path}/{name_module}.toml', 'r') as f:
+            with open(f'{path}/{name_module}.toml', 'r', encoding='utf-8') as f:
                 config = f.read()
             config = toml.loads(config)
         except FileNotFoundError:
