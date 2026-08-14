@@ -9,7 +9,8 @@ login = ""
 password = ""
 port = ""
 
-[import.temp]
+[import.module]
+temp = []
 
 [commands.start]
 text = "Hi in bot made in NeoGram"
