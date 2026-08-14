@@ -1,13 +1,13 @@
 name_project = "test"
-bot_token = "write_here_bot_api_token"
+bot_token = "token_place"
 admins = [ "write_here_id",]
 
 [database]
-type = "mysql"
-host = "localhost"
-login = "neogram"
-password = "password"
-port = "3306"
+type = "sqlite"
+host = ""
+login = ""
+password = ""
+port = ""
 
 [import.temp]
 
