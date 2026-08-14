@@ -1,4 +1,0 @@
-Place your README screenshot here: `images/screenshot.png`.
-
-Layout: on the left the `config.toml` of a small bot, on the right a Telegram chat showing
-the bot's reply. Delete this file when you add the screenshot.
