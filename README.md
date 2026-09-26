@@ -21,6 +21,23 @@ This is screenshot of work bot from examples(test):
 ![NeoGram — config.toml (left) and bot in Telegram (right)](images/screenshot.png)
 
 
+## Documentation
+
+The full documentation lives in the [`docs/`](docs/README.md) folder and is split by topic:
+
+- [Installation](docs/installation.md)
+- [Getting started — your first bot](docs/getting-started.md)
+- [Configuration (`config.toml`)](docs/configuration.md)
+- [States & multi-step dialogs](docs/states.md)
+- [Buttons & keyboards](docs/buttons.md)
+- [Files & media handling](docs/files-media.md)
+- [Send actions (`send_text`, `send_photo`, ...)](docs/actions.md)
+- [API reference (`Api` methods)](docs/api-reference.md)
+- [Examples walkthrough](docs/examples.md)
+
+Русская версия документации: [docs/ru/](docs/ru/README.md).
+
+
 ## Features
 
 - **Config-driven**: describe the whole bot in TOML — no glue code required.
@@ -78,22 +95,6 @@ port = "3306"
 Every push and pull request to `main` triggers a GitHub Actions workflow
 ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) that installs the package and
 runs the test suite on Python 3.8, 3.9 and 3.10.
-
-## Documentation
-
-The full documentation lives in the [`docs/`](docs/README.md) folder and is split by topic:
-
-- [Installation](docs/installation.md)
-- [Getting started — your first bot](docs/getting-started.md)
-- [Configuration (`config.toml`)](docs/configuration.md)
-- [States & multi-step dialogs](docs/states.md)
-- [Buttons & keyboards](docs/buttons.md)
-- [Files & media handling](docs/files-media.md)
-- [Send actions (`send_text`, `send_photo`, ...)](docs/actions.md)
-- [API reference (`Api` methods)](docs/api-reference.md)
-- [Examples walkthrough](docs/examples.md)
-
-Русская версия документации: [docs/ru/](docs/ru/README.md).
 
 ## Requirements
 
